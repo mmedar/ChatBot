@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatBot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-container p {
+            margin: 5px 0;
+        }
+        
+        .user-input {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        .user-input input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        
+        .user-input input[type="submit"] {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        /* Chatbot bubble styles */
+        .chatbot-bubble {
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 20px;
+            padding: 10px 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+        
+        /* User bubble styles */
+        .user-bubble {
+            background-color: #1E88E5;
+            color: #fff;
+            border-radius: 20px;
+            padding: 10px 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            margin-bottom: 10px;
+            align-self: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <h1>ChatBot</h1>
+    <div id="setup-container">
+        <h2>Verification</h2>
+        <p>Please enter the random string: <span id="random-string"></span></p>
+        <input type="text" id="verification-input" placeholder="Enter the string">
+        <button id="verify-button" onclick="verifyString()">Verify</button>
+    </div>
+    <div id="chat-container" style="display: none;">
+        <div id="response"></div>
+        <form id="chat-form">
+            <div class="user-input">
+                <input type="text" id="user-input" autocomplete="off" placeholder="Type your message...">
+                <input type="submit" value="Send">
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const randomStrings = ['test', '41506c03cccf2435ee38', '921b9e4bd46f1641b5b3'];
+
+        function generateRandomString() {
+            return randomStrings[Math.floor(Math.random() * randomStrings.length)];
+        }
+
+        function verifyString() {
+            const userInput = document.getElementById('verification-input').value.trim();
+            const randomString = generateRandomString();
+
+            if (userInput.toLowerCase() === randomString) {
+                document.getElementById('setup-container').style.display = 'none';
+                document.getElementById('chat-container').style.display = 'block';
+                initiateChat();
+            } else {
+                alert('Incorrect value. Please try again.');
+            }
+        }
+    
+        function initiateChat() {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const responseDiv = document.getElementById('response');
+        
+            chatForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+        
+                const message = userInput.value;
+        
+                if (message.trim() === '') {
+                    return;
+                }
+        
+                const chatBubble = document.createElement('p');
+                chatBubble.textContent = 'You: ' + message;
+                responseDiv.appendChild(chatBubble);
+        
+                fetch('/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `user_input=${encodeURIComponent(message)}`,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    const chatBubble = document.createElement('p');
+                    chatBubble.textContent = 'ChatbotAI: ' + data;
+                    responseDiv.appendChild(chatBubble);
+                    responseDiv.scrollTop = responseDiv.scrollHeight;
+                    userInput.value = '';
+                    userInput.focus();
+                });
+            });
+        }
+    </script>
+</body>
+</html>

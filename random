@@ -1,0 +1,4 @@
+import secrets
+
+random_key = secrets.token_bytes(10)
+print(random_key.hex())
