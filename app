@@ -14,18 +14,17 @@ patterns = [
       'I am fine, thanks for asking.']),
     
     (r"What's your name|What is your name|Who are you", 
-     ['My name is Chatbot, pleased to meet you!', 
-      'I am Chatbot, nice to meet you!']),
+     ['My name is BarBot, pleased to meet you!', 
+      'I am BarBot, nice to meet you!']),
     (r'Where are you from|Where do you come from', 
      ['I was created by a programmer, so you could say I come from the digital world!', 
       'I do not have a physical location, I am a chatbot.']),
     (r'Who are you|what are you|what do you do', 
      ['I am a chatbot designed to have conversations with people.', 
-      'I am here to chat with you and answer your questions.', 
-      'I am an AI language model created by OpenAI.']),
+      'I am here to chat with you and answer on your specified questions.']),
     (r'What do you like to do|What are your hobbies',
      ['As a chatbot, I do not have hobbies, but I enjoy helping people!', 
-      'I do not have hobbies, but I like learning new things.', 
+      'I do not have hobbies, but I like to answer on your questions.', 
       'My purpose is to assist you, so helping you is what I like to do.']),
     (r'what is your purpose|why were you created|what is your goal',
      ['I was created to chat with people and assist them with their questions.', 
@@ -40,6 +39,8 @@ patterns = [
     
     (r'Goodbye|Bye|See you later|Talk to you later', 
      ['Goodbye!', 'Take care!', 'Bye!', 'Have a nice day!']),
+    (r'Im here|Im still here', 
+     ['Glad to hear that!', 'Lets talk more then!']),
     
     (r'What is the pressure of the boiler|What is the pressure', 
      ['The pressure is 1bar',
@@ -61,12 +62,24 @@ patterns = [
     (r'Is 6bar good', 
      ['Pressure is on high level, please adjust it!']),
     (r'Is 7bar good', 
-     ['Pressure is on extreme level, please stick to safety measures that you are provided with.']),
-    
+     ['Pressure is on extreme level, please stick to the safety measures.']),
+   
     (r'How to adjust the pressure|How to adjust it|How to lower the pressure|How to lower it', 
-     ['....']),
+     ['Open the boiler''s ' 'vent valves to release excess pressure. This allows steam or hot water to escape safely from the system until ' 
+      'the pressure drops to a safe level. Ensure that the venting process is conducted in a controlled manner to prevent sudden releases that may cause injury.',
+      'Boiler systems are equipped with safety valves that automatically release pressure when it exceeds a specified limit. Ensure that the safety valve is properly maintained, '
+      'regularly inspected, and in good working condition. If the safety valve fails to operate, it should be replaced immediately.',
+      'Regularly inspect and maintain the boiler to ensure it operates within safe pressure limits. This includes checking for any leaks, '
+      'addressing damaged or faulty components, and verifying the accuracy of pressure gauges and safety devices.']),
     (r'What are the safety measures|What are the measures', 
-     ['....']),
+     ['Initiate an emergency shutdown immediately. This involves activating the emergency stop button or switch, '
+      'cutting off the fuel supply, and shutting down the ignition system. These actions will stop the heat input to the boiler, preventing further pressure increase.',
+      'If the pressure relief valves or safety valves are not relieving the pressure adequately, emergency venting should be considered. '
+      'This involves manually opening the vent valves or relief valves to release excess steam or water and relieve the pressure. However, extreme caution must '
+      'be exercised as the vented steam can cause severe burns or injuries. Ensure that the venting is done in a controlled and safe manner.']),
+    (r'Tell me more', 
+     ['If the pressure in the boiler continues to rise despite emergency measures, it is crucial to evacuate the area. Safety should be the top priority, ' 
+      'and all personnel should move to a safe location away from the boiler and any potential hazards.']),
 ]
 
 fallback_responses = [
@@ -90,7 +103,7 @@ def get_chatbot_response(user_input):
 def home():
     return render_template('index.html')
 
-@app.route('/chatbot', methods=['POST'])
+@app.route('/chatbot', methods=['GET', 'POST'])
 def chatbot_response():
     user_input = request.form['user_input']
     response = get_chatbot_response(user_input)
